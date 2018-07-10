@@ -50,7 +50,7 @@ public class ProcessInputTest {
 	}
 
 	//@Test
-	public void test() {
+	public void test(){
 		fail("Not yet implemented");
 	}
 
