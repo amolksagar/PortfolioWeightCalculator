@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>au.ambition.portfoliowtcalc</groupId>
+  <artifactId>portfolio-weight-calculator</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Portfolio Weight Calculator</name>
+  <description>This project will calculate the portfolio weight given the holdings within the portfolio</description>
+  <properties>
+  <junitVersion>4.12</junitVersion>
+  </properties>
+  <dependencies>
+  	<dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>${junitVersion}</version>
+	</dependency>
+  </dependencies>
+  <build>
+  <plugins>
+    <plugin>
+      <!-- Build an executable JAR -->
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <version>3.1.0</version>
+      <configuration>
+        <archive>
+          <manifest>
+            <addClasspath>true</addClasspath>
+            <classpathPrefix>lib/</classpathPrefix>
+            <mainClass>au.ambition.portfoliowtcalc.PortfolioWtCalcLauncher</mainClass>
+          </manifest>
+        </archive>
+      </configuration>
+    </plugin>
+    <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.1</version>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+            </configuration>
+    </plugin>
+  </plugins>
+</build>
+</project>
