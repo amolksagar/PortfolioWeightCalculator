@@ -1,0 +1,30 @@
+package au.gov.abs.daa;
+
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.DispatcherServletAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.PropertySource;
+
+@SpringBootApplication
+@PropertySource("file:${au.gov.abs.daa.configdir}/application.properties")
+@EnableAutoConfiguration(exclude = {
+  DispatcherServletAutoConfiguration.class,
+  WebMvcAutoConfiguration.class,
+  DataSourceAutoConfiguration.class,
+  SecurityAutoConfiguration.class
+})
+public class Application extends SpringBootServletInitializer {
+  
+  private static Class<Application> applicationClass = Application.class;
+  
+  @Override
+  protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+    return builder.sources(applicationClass);
+  }
+  
+}
