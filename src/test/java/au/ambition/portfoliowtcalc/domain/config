@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>au.gov.abs.daa</groupId>
+  <artifactId>daa-service</artifactId>
+  <version>1.0.15-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <parent>
+    <groupId>au.gov.abs.parents</groupId>
+    <artifactId>abs-base-project-parent</artifactId>
+    <version>1.0.5</version>
+    <relativePath />
+  </parent>
+
+  <name>DAA Service</name>
+  <description>Data Adjustments and Annotations (DAA) REST Web Service</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <build.number>Not applicable (manual local build)</build.number>
+    <build.revision>Not applicable (manual local build)</build.revision>
+    <spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+    <version.commons.lang3>3.3.2</version.commons.lang3>
+    <cxf.version>3.1.11</cxf.version>
+    <version.wildfly>1.0.2.Final</version.wildfly>
+    <mrr-common.version>0.0.9</mrr-common.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>au.gov.abs.daa</groupId>
+      <artifactId>daa-contract</artifactId>
+      <version>1.0.12-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>au.gov.abs.foundational</groupId>
+      <artifactId>mrr-common</artifactId>
+      <!-- updated for 0.0.2 preview release , milnic 6/9/2017 -->
+      <version>${mrr-common.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Using slf4j for logging. -->
+    <!-- http://connections.corp.abs.gov.au/wikis/home?lang=en-au#!/wiki/Wc6fd8e34d936_4fc3_9f43_f126a7f155dc/page/Logging%20Implementation%20in%20Java -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- This brings in JUnit, Mockito and other useful testing libraries. -->
+    <!-- https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-test-autoconfigure</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${version.commons.lang3}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.0</version>
+    </dependency>
+
+    <!-- JAX-RS is part of Java EE, it provides standards for implementing 
+      REST services: https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services -->
+    <!-- RESTEasy is the JAX-RS implementation we are using: http://resteasy.jboss.org/ -->
+    <!-- We are using Spring Boot to configure CXF: https://github.com/paypal/resteasy-spring-boot -->
+    <!-- Additional Spring guidance: http://connections.corp.abs.gov.au/wikis/home?lang=en-au#!/wiki/W61d322130d0b_4330_95ca_042f13409b20/page/Spring%20Guide -->
+    <dependency>
+      <groupId>com.paypal.springboot</groupId>
+      <artifactId>resteasy-spring-boot-starter</artifactId>
+      <version>2.3.0-RELEASE</version>
+      <exclusions>
+        <!-- To deploy to JBoss EAP we need to use undertow instead. -->
+        <exclusion>
+          <artifactId>spring-boot-starter-tomcat</artifactId>
+          <groupId>org.springframework.boot</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-undertow</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle</groupId>
+      <artifactId>ojdbc7</artifactId>
+      <version>12.1.0.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>au.gov.abs.ras</groupId>
+      <artifactId>ras-connection-ws-api</artifactId>
+      <version>2.0.0</version>
+      <!-- <exclusions>
+      	<exclusion>
+      		<groupId>org.bouncycastle</groupId>
+      		<artifactId>bcprov-jdk15on</artifactId>
+      	</exclusion>
+      </exclusions> --> 
+    </dependency>
+
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+    </dependency>
+
+    <!-- Used to secure services with SAML -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>au.gov.abs.saml</groupId>
+      <artifactId>saml-validator</artifactId>
+      <version>2.0.0</version>
+    </dependency>
+
+    <!-- Needed for SAML support -->
+    <dependency>
+      <groupId>au.gov.abs.soaeg</groupId>
+      <artifactId>cxf-adfs-client</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.netflix.archaius</groupId>
+      <artifactId>archaius-core</artifactId>
+      <version>0.6.3</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <!-- Do not copy WEB-INF into WEB-INF/classes/WEB-INF -->
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <excludes>
+          <exclude>version.properties</exclude>
+          <exclude>WEB-INF</exclude>
+          <exclude>WEB-INF/**</exclude>
+        </excludes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <includes>
+          <include>version.properties</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/target/generated-resources</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.6.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+            <manifestEntries>
+              <Implementation-Vendor>Australian Bureau of Statistics</Implementation-Vendor>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <!-- Deploy to a locally running JBoss EAP 7 server using the wildfly:deploy 
+        goal. -->
+      <plugin>
+        <groupId>org.wildfly.plugins</groupId>
+        <artifactId>wildfly-maven-plugin</artifactId>
+        <version>1.0.2.Final</version>
+        <configuration>
+          <hostname>127.0.0.1</hostname>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.0.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.4</version>
+        <configuration>
+          <additionalparam>-Xdoclint:none</additionalparam>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <instrumentation>
+            <!-- To ignore certain packages (like generated code) add both 
+              an ignores -->
+            <!-- and excludes entry for the package. -->
+            <ignores>
+              <!-- <ignore>com.example.generated.*</ignore> -->
+            </ignores>
+            <excludes>
+              <!-- <exclude>com/example/generated/**/*.class</exclude> -->
+            </excludes>
+          </instrumentation>
+          <formats>
+            <format>html</format>
+            <format>xml</format>
+          </formats>
+          <aggregate>true</aggregate>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.3</version>
+        <configuration>
+          <xmlOutput>true</xmlOutput>
+          <excludeFilterFile>${basedir}/src/main/config/findbugs/findbugs-exclude.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <configLocation>${basedir}/src/main/config/checkstyle/abs_checks.xml</configLocation>
+          <suppressionsLocation>${basedir}/src/main/config/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+          <encoding>UTF-8</encoding>
+          <consoleOutput>true</consoleOutput>
+          <failsOnError>true</failsOnError>
+          <linkXRef>false</linkXRef>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <ciManagement>
+    <system>Jenkins</system>
+    <!-- TODO: Update this once a Jenkins project is setup. -->
+    <url>https://jenkins/</url>
+  </ciManagement>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://jira/browse/PANDAAB</url>
+  </issueManagement>
+
+  <scm>
+    <url>http://tsdcoderepository/repos/basic-auth/SBTP/PandA/Account Balancing/trunk/data-adjustments-and-annotations/daa-service</url>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <id>abs-repo</id>
+      <name>ABS Releases Repository</name>
+      <url>http://tsdmavenrepository.corp.abs.gov.au/artifactory/libs-release-local</url>
+    </repository>
+    <snapshotRepository>
+      <id>abs-snapshot-repo</id>
+      <name>ABS Snapshots Repository</name>
+      <url>http://tsdmavenrepository.corp.abs.gov.au/artifactory/libs-snapshot-local</url>
+    </snapshotRepository>
+  </distributionManagement>
+  
+  <profiles>
+    <profile>
+      <id>https</id>
+      <properties>
+        <deploy.port>9443</deploy.port>
+        <deploy.protocol>https-remoting</deploy.protocol>
+      </properties>
+    </profile>
+     <profile>
+      <id>jenkins-dev</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.wildfly.plugins</groupId>
+            <artifactId>wildfly-maven-plugin</artifactId>
+            <version>${version.wildfly}</version>
+            <executions>
+              <execution>
+                <id>install</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>deploy</goal>
+                </goals>
+              </execution>
+               <execution>
+                <id>undeploy</id>
+                <phase>clean</phase>
+                <goals>
+                  <goal>undeploy</goal>
+                </goals>
+                <configuration>
+                  <ignoreMissingDeployment>true</ignoreMissingDeployment>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <groupId>au.gov.abs.daa</groupId>
+              <artifactId>daa-service</artifactId>
+              <skip>false</skip>
+              <username>svc-dev-sab</username>
+              <password>${deploy.jboss.password}</password>
+              <hostname>lnxabs0004780.infra.abs.gov.au</hostname>
+              <port>9443</port>
+              <protocol>https-remoting</protocol>
+              <reload>true</reload>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jenkins-local</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.wildfly.plugins</groupId>
+            <artifactId>wildfly-maven-plugin</artifactId>
+            <version>${version.wildfly}</version>
+            <executions>
+              <execution>
+                <id>install</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>deploy</goal>
+                </goals>
+              </execution>
+               <execution>
+                <id>undeploy</id>
+                <phase>clean</phase>
+                <goals>
+                  <goal>undeploy</goal>
+                </goals>
+                <configuration>
+                  <ignoreMissingDeployment>true</ignoreMissingDeployment>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <groupId>au.gov.abs.daa</groupId>
+              <artifactId>daa-service</artifactId>
+              <skip>false</skip>
+              <username>svc-dev-sab</username>
+              <password>${deploy.jboss.password}</password>
+              <hostname>127.0.0.1</hostname>
+              <reload>true</reload>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
