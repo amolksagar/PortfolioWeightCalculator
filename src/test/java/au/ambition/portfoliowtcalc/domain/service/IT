@@ -1,0 +1,94 @@
+package au.gov.abs.daa.rest.jaxrs;
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.cxf.BusFactory;
+import org.apache.cxf.ws.security.SecurityConstants;
+import org.apache.cxf.ws.security.tokenstore.SecurityToken;
+import org.apache.wss4j.common.saml.SamlAssertionWrapper;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.google.gson.Gson;
+
+import au.gov.abs.daa.Application;
+import au.gov.abs.daa.rest.model.CreationDTO;
+import au.gov.abs.daa.rest.model.CreationDTOArray;
+import au.gov.abs.daa.rest.model.DeleteDTOArray;
+import au.gov.abs.daa.rest.model.DeletionDTO;
+import au.gov.abs.daa.rest.model.UpdateDTO;
+import au.gov.abs.daa.rest.model.UpdateDTOArray;
+import au.gov.abs.daa.util.CommonUtility;
+import au.gov.abs.daa.util.Constants;
+import au.gov.abs.saml.SamlBase64Util;
+import au.gov.abs.soaeg.cxf.adfs.ADFSSTSClient;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("integration-test")
+public class DaaServiceIT {
+  
+  private static final Logger log = LoggerFactory.getLogger(DaaServiceIT.class);
+  
+  private static final String schemaName_set_1 = "SPI7CG_CgNvI";
+  private static final String columnName_set_1 = "IVXXXXXGNVBXWGSQDTWQRTR0003";
+  private static final String tableName_set_1 = "W$XXXXXGNVBSN-SSNDCTRSSR007";
+  private static final String rowId_set_1 = "164921155";
+  private static final String udsetUrn_set_1 = "urn:aim:iMXkntwecpZhhwQK:1";
+  
+  private static final String schemaName_set_2 = "SPI7CG_ClmK7";
+  private static final String columnName_set_2 = "IVXXXXXLMKBNRPQRTRNDNGS0004";
+  private static final String tableName_set_2 = "W$XXXXXLMKBSNSSNDCTRSSR008";
+  private static final String rowId_set_2 = "164921155";
+  private static final String udsetUrn_set_2 = "urn:aim:OQD2ugNUiPaRePhX:1";
+
+  
+  private static final int BULK_SIZE_SET_1 = 1000;
+  private static final int BULK_SIZE_SET_2 = 0;
+  
+  
+  @Autowired
+  private TestRestTemplate restTemplate;
+  
+
+  
+  @Before
+  public void setup() throws Exception {
+	  
+  }
+  
+  @Test
+  public void testAnnotationCategories() {
+  
+  }
+}
